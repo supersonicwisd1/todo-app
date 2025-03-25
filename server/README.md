@@ -1,4 +1,4 @@
-# Task Manager - Server
+# Todo - Server
 
 A Node.js/Express backend API for the Task Manager application with MongoDB integration and JWT authentication.
 

@@ -1,4 +1,4 @@
-# Task Manager - Client
+# Todo - Client
 
 A modern React application for managing tasks with Material-UI components and context-based state management.
 
