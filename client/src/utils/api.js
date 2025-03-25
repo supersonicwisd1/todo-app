@@ -2,34 +2,32 @@ import axios from 'axios';
 
 // Create an instance of axios with default config
 const api = axios.create({
-  baseURL: 'http://localhost:5001/api',
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5001/api',
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
   }
 });
 
-// Add a request interceptor
+// Request interceptor
 api.interceptors.request.use(
-  config => {
+  (config) => {
+    // Add auth token if it exists
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  error => {
+  (error) => {
     return Promise.reject(error);
   }
 );
 
-// Add a response interceptor to handle errors
+// Response interceptor
 api.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.response && error.response.status === 401) {
-      // Clear token on 401 unauthorized response
-      localStorage.removeItem('token');
-    }
+  (response) => response,
+  (error) => {
     return Promise.reject(error);
   }
 );

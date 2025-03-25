@@ -10,13 +10,15 @@ import {
   Grid,
   Typography,
   FormControlLabel,
-  Checkbox
+  Checkbox,
+  Alert,
+  Snackbar
 } from '@mui/material';
 import TaskContext from '../../context/task/TaskContext';
 
 const TaskForm = () => {
-  const { addTask, updateTask, current, clearCurrent } = useContext(TaskContext);
-
+  const { addTask, updateTask, current, clearCurrent, error: taskError } = useContext(TaskContext);
+  const [success, setSuccess] = useState(false);
   const [task, setTask] = useState({
     title: '',
     description: '',
@@ -50,21 +52,39 @@ const TaskForm = () => {
     setTask({ ...task, [e.target.name]: value });
   };
 
-  const onSubmit = e => {
+  const onSubmit = async e => {
     e.preventDefault();
+    setSuccess(false);
     
-    if (current === null) {
-      addTask(task);
-    } else {
-      updateTask(task);
+    try {
+      if (current === null) {
+        await addTask(task);
+        setSuccess(true);
+      } else {
+        await updateTask(task);
+        setSuccess(true);
+      }
+      
+      // Clear form after successful submission
+      clearAll();
+    } catch (error) {
+      console.error('Task submission error:', error);
     }
-    
-    // Clear form after submission
-    clearAll();
   };
 
   const clearAll = () => {
     clearCurrent();
+    setTask({
+      title: '',
+      description: '',
+      priority: 'medium',
+      dueDate: '',
+      completed: false
+    });
+  };
+
+  const handleCloseSnackbar = () => {
+    setSuccess(false);
   };
 
   return (
@@ -168,6 +188,40 @@ const TaskForm = () => {
           )}
         </Grid>
       </Box>
+
+      {/* Success Alert */}
+      <Snackbar 
+        open={success} 
+        autoHideDuration={3000} 
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity="success" 
+          sx={{ width: '100%' }}
+        >
+          {current ? 'Task updated successfully!' : 'Task added successfully!'}
+        </Alert>
+      </Snackbar>
+
+      {/* Error Alert */}
+      {taskError && (
+        <Snackbar 
+          open={!!taskError} 
+          autoHideDuration={3000} 
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert 
+            onClose={handleCloseSnackbar} 
+            severity="error" 
+            sx={{ width: '100%' }}
+          >
+            {taskError}
+          </Alert>
+        </Snackbar>
+      )}
     </Box>
   );
 };

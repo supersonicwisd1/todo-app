@@ -48,11 +48,19 @@ const Register = () => {
     let errors = {};
     let isValid = true;
 
+    // Username validation
     if (!username.trim()) {
       errors.username = 'Username is required';
       isValid = false;
+    } else if (username.length < 3 || username.length > 20) {
+      errors.username = 'Username must be between 3 and 20 characters';
+      isValid = false;
+    } else if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      errors.username = 'Username can only contain letters, numbers, and underscores';
+      isValid = false;
     }
 
+    // Email validation
     if (!email.trim()) {
       errors.email = 'Email is required';
       isValid = false;
@@ -61,14 +69,19 @@ const Register = () => {
       isValid = false;
     }
 
+    // Password validation
     if (!password) {
       errors.password = 'Password is required';
       isValid = false;
-    } else if (password.length < 6) {
-      errors.password = 'Password must be at least 6 characters';
+    } else if (password.length < 8) {
+      errors.password = 'Password must be at least 8 characters';
+      isValid = false;
+    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) {
+      errors.password = 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)';
       isValid = false;
     }
 
+    // Password confirmation
     if (password !== password2) {
       errors.password2 = 'Passwords do not match';
       isValid = false;

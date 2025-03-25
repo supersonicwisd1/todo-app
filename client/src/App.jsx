@@ -18,10 +18,6 @@ import PrivateRoute from './PrivateRoute';
 import { AuthProvider } from './context/auth/AuthContext';
 import { TaskProvider } from './context/task/TaskContext';
 
-// Set axios base URL
-import axios from 'axios';
-axios.defaults.baseURL = 'http://localhost:5001/api';
-
 // Create MUI theme
 const theme = createTheme({
   palette: {

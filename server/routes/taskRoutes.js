@@ -7,6 +7,7 @@ const {
   deleteTask
 } = require('../controllers/taskController');
 const { protect } = require('../middleware/authMiddleware');
+const { taskValidation } = require('../middleware/validateMiddleware');
 
 const router = express.Router();
 
@@ -16,11 +17,11 @@ router.use(protect);
 // Route definitions
 router.route('/')
   .get(getTasks)
-  .post(createTask);
+  .post(taskValidation, createTask);
 
 router.route('/:id')
   .get(getTask)
-  .put(updateTask)
+  .put(taskValidation, updateTask)
   .delete(deleteTask);
 
 module.exports = router;

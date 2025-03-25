@@ -100,17 +100,34 @@ const updateTask = async (req, res) => {
       });
     }
 
-    // Update task
-    task = await Task.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
+    // Update task - only update fields that are provided
+    const updateFields = {};
+    Object.keys(req.body).forEach(key => {
+      if (req.body[key] !== undefined) {
+        updateFields[key] = req.body[key];
+      }
     });
+
+    task = await Task.findByIdAndUpdate(
+      req.params.id,
+      { $set: updateFields },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
 
     res.status(200).json({
       success: true,
       data: task
     });
   } catch (error) {
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        success: false,
+        message: Object.values(error.errors).map(err => err.message).join(', ')
+      });
+    }
     res.status(400).json({
       success: false,
       message: error.message
@@ -141,7 +158,7 @@ const deleteTask = async (req, res) => {
       });
     }
 
-    await Task.findByIdAndDelete(req.params.id);
+    await task.deleteOne();
 
     res.status(200).json({
       success: true,

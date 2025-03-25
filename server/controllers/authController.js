@@ -53,9 +53,19 @@ const register = async (req, res) => {
       });
     }
 
+    // Handle validation errors
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({
+        success: false,
+        message: messages.join(', ')
+      });
+    }
+
+    console.error('Registration error:', error);
     res.status(400).json({
       success: false,
-      message: error.message
+      message: 'Registration failed. Please check your input and try again.'
     });
   }
 };
