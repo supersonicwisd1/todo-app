@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Container, Typography, Box, Grid, Paper, CircularProgress, Alert } from '@mui/material';
+import { Container, Typography, Box, Grid, Paper, CircularProgress, Alert, IconButton, Tooltip } from '@mui/material';
+import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import TaskContext from '../context/task/TaskContext';
 import AuthContext from '../context/auth/AuthContext';
 import TaskForm from '../components/tasks/TaskForm';
@@ -7,7 +8,7 @@ import TaskItem from '../components/tasks/TaskItem';
 import TaskFilter from '../components/tasks/TaskFilter';
 
 const Tasks = () => {
-  const { tasks, getTasks, loading, error: taskError, clearErrors: clearTaskErrors } = useContext(TaskContext);
+  const { tasks, getTasks, loading, error: taskError, clearErrors: clearTaskErrors, clearTasks } = useContext(TaskContext);
   const { user, success: authSuccess, clearErrors: clearAuthErrors } = useContext(AuthContext);
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [filters, setFilters] = useState({
@@ -68,6 +69,13 @@ const Tasks = () => {
     setFilters(newFilters);
   };
 
+  // Handle clear all tasks
+  const handleClearAll = () => {
+    if (window.confirm('Are you sure you want to delete all tasks? This action cannot be undone.')) {
+      clearTasks();
+    }
+  };
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
@@ -109,7 +117,20 @@ const Tasks = () => {
           {/* Task List Section */}
           <Grid item xs={12} md={8}>
             <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-              <TaskFilter onFilterChange={handleFilterChange} />
+              <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                <TaskFilter onFilterChange={handleFilterChange} />
+                {filteredTasks.length > 0 && (
+                  <Tooltip title="Clear All Tasks">
+                    <IconButton
+                      color="error"
+                      onClick={handleClearAll}
+                      size="small"
+                    >
+                      <DeleteSweepIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </Box>
               
               <Box sx={{ mt: 2 }}>
                 {filteredTasks.length === 0 ? (

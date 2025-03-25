@@ -37,7 +37,7 @@ const TaskFilter = ({ onFilterChange }) => {
         Filter Tasks
       </Typography>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <TextField
             fullWidth
             id="search"
@@ -50,7 +50,7 @@ const TaskFilter = ({ onFilterChange }) => {
             size="small"
           />
         </Grid>
-        <Grid item xs={6} md={3}>
+        <Grid item xs={6} md={4}>
           <FormControl fullWidth variant="outlined" size="small">
             <InputLabel id="priority-filter-label">Priority</InputLabel>
             <Select
@@ -68,7 +68,7 @@ const TaskFilter = ({ onFilterChange }) => {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={6} md={3}>
+        <Grid item xs={6} md={4}>
           <FormControl fullWidth variant="outlined" size="small">
             <InputLabel id="status-filter-label">Status</InputLabel>
             <Select
@@ -81,7 +81,7 @@ const TaskFilter = ({ onFilterChange }) => {
             >
               <MenuItem value="all">All Status</MenuItem>
               <MenuItem value="completed">Completed</MenuItem>
-              <MenuItem value="active">Active</MenuItem>
+              <MenuItem value="pending">Pending</MenuItem>
             </Select>
           </FormControl>
         </Grid>
